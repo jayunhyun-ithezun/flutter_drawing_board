@@ -15,7 +15,7 @@ class DrawConfig {
     this.fingerCount = 0,
     this.size,
     this.blendMode = BlendMode.srcOver,
-    this.color = Colors.red,
+    this.color = Colors.black,
     this.colorFilter,
     this.filterQuality = FilterQuality.high,
     this.imageFilter,
@@ -363,7 +363,7 @@ class DrawingController extends ChangeNotifier {
           pixelRatio: View.of(painterKey.currentContext!).devicePixelRatio);
       return await image.toByteData(format: ui.ImageByteFormat.png);
     } catch (e) {
-      debugPrint('获取图片数据出错:$e');
+      debugPrint('Error getting image data:$e');
       return null;
     }
   }
