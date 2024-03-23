@@ -7,7 +7,7 @@ import 'helper/safe_value_notifier.dart';
 import 'paint_contents/paint_content.dart';
 import 'paint_contents/simple_line.dart';
 
-/// 绘制参数
+/// Drawing parameters
 class DrawConfig {
   DrawConfig({
     required this.contentType,
@@ -35,7 +35,7 @@ class DrawConfig {
     this.fingerCount = 0,
     this.size,
     this.blendMode = BlendMode.srcOver,
-    this.color = Colors.red,
+    this.color = Colors.black,
     this.colorFilter,
     this.filterQuality = FilterQuality.high,
     this.imageFilter,
@@ -49,7 +49,7 @@ class DrawConfig {
     this.style = PaintingStyle.stroke,
   });
 
-  /// 旋转的角度（0:0,1:90,2:180,3:270）
+  /// angle of rotation（0:0,1:90,2:180,3:270）
   final int angle;
 
   final Type contentType;
@@ -58,7 +58,7 @@ class DrawConfig {
 
   final Size? size;
 
-  /// Paint相关
+  /// Paint related
   final BlendMode blendMode;
   final Color color;
   final ColorFilter? colorFilter;
@@ -73,7 +73,7 @@ class DrawConfig {
   final double strokeWidth;
   final PaintingStyle style;
 
-  /// 生成paint
+  /// generated paint
   Paint get paint => Paint()
     ..blendMode = blendMode
     ..color = color
@@ -130,7 +130,7 @@ class DrawConfig {
   }
 }
 
-/// 绘制控制器
+/// drawing controller
 class DrawingController extends ChangeNotifier {
   DrawingController({DrawConfig? config, PaintContent? content}) {
     _history = <PaintContent>[];
@@ -142,63 +142,63 @@ class DrawingController extends ChangeNotifier {
     setPaintContent(content ?? SimpleLine());
   }
 
-  /// 绘制开始点
+  /// drawing start point
   Offset? _startPoint;
 
-  /// 画板数据Key
+  /// Drawing board data key
   late GlobalKey painterKey = GlobalKey();
 
-  /// 控制器
+  /// controller
   late SafeValueNotifier<DrawConfig> drawConfig;
 
-  /// 最后一次绘制的内容
+  /// The last time it was drawn.
   late PaintContent _paintContent;
 
-  /// 当前绘制内容
+  /// Current Drawing Content
   PaintContent? currentContent;
 
-  /// 底层绘制内容(绘制记录)
+  /// Underlying Drawing Content (Drawing Records)
   late List<PaintContent> _history;
 
-  /// 当前controller是否存在
+  /// Does the current controller exist?
   bool _mounted = true;
 
-  /// 获取绘制图层/历史
+  /// Get Drawing Layers/History
   List<PaintContent> get getHistory => _history;
 
-  /// 步骤指针
+  /// step pointer
   late int _currentIndex;
 
-  /// 表层画布刷新控制
+  /// Surface Canvas Refresh Control
   RePaintNotifier? painter;
 
-  /// 底层画布刷新控制
+  /// Base Canvas Refresh Control
   RePaintNotifier? realPainter;
 
-  /// 获取当前步骤索引
+  /// Get the index of the current step
   int get currentIndex => _currentIndex;
 
-  /// 获取当前颜色
+  /// Get the current color
   Color get getColor => drawConfig.value.color;
 
-  /// 能否进行绘制
+  /// Is it possible to draw?
   bool get couldDraw => drawConfig.value.fingerCount <= 1;
 
-  /// 开始绘制点
+  /// Start drawing points
   Offset? get startPoint => _startPoint;
 
-  /// 设置画板大小
+  /// Set the size of the drawing board
   void setBoardSize(Size? size) {
     drawConfig.value = drawConfig.value.copyWith(size: size);
   }
 
-  /// 手指落下
+  /// finger drop
   void addFingerCount(Offset offset) {
     drawConfig.value = drawConfig.value
         .copyWith(fingerCount: drawConfig.value.fingerCount + 1);
   }
 
-  /// 手指抬起
+  /// Fingers up.
   void reduceFingerCount(Offset offset) {
     if (drawConfig.value.fingerCount <= 0) {
       return;
@@ -208,7 +208,7 @@ class DrawingController extends ChangeNotifier {
         .copyWith(fingerCount: drawConfig.value.fingerCount - 1);
   }
 
-  /// 设置绘制样式
+  /// Set drawing style
   void setStyle({
     BlendMode? blendMode,
     Color? color,
@@ -242,7 +242,7 @@ class DrawingController extends ChangeNotifier {
     );
   }
 
-  /// 设置绘制内容
+  /// Set drawing content
   void setPaintContent(PaintContent content) {
     content.paint = drawConfig.value.paint;
     _paintContent = content;
@@ -250,28 +250,28 @@ class DrawingController extends ChangeNotifier {
         drawConfig.value.copyWith(contentType: content.runtimeType);
   }
 
-  /// 添加一条绘制数据
+  /// add a data
   void addContent(PaintContent content) {
     _history.add(content);
     _currentIndex++;
     _refreshDeep();
   }
 
-  /// 添加多条数据
+  /// Add multiple pieces of data
   void addContents(List<PaintContent> contents) {
     _history.addAll(contents);
     _currentIndex += contents.length;
     _refreshDeep();
   }
 
-  /// * 旋转画布
-  /// * 设置角度
+  /// * rotating canvas
+  /// * set angle
   void turn() {
     drawConfig.value =
         drawConfig.value.copyWith(angle: (drawConfig.value.angle + 1) % 4);
   }
 
-  /// 开始绘制
+  /// Start drawing
   void startDraw(Offset startPoint) {
     _startPoint = startPoint;
     currentContent = _paintContent.copy();
@@ -279,19 +279,19 @@ class DrawingController extends ChangeNotifier {
     currentContent?.startDraw(startPoint);
   }
 
-  /// 取消绘制
+  /// Undrawn
   void cancelDraw() {
     _startPoint = null;
     currentContent = null;
   }
 
-  /// 正在绘制
+  /// Drawing in progress
   void drawing(Offset nowPaint) {
     currentContent?.drawing(nowPaint);
     _refresh();
   }
 
-  /// 结束绘制
+  /// End of drawing
   void endDraw() {
     _startPoint = null;
     final int hisLen = _history.length;
@@ -311,7 +311,7 @@ class DrawingController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 撤销
+  /// undo function
   void undo() {
     if (_currentIndex > 0) {
       _currentIndex = _currentIndex - 1;
@@ -329,7 +329,7 @@ class DrawingController extends ChangeNotifier {
     }
   }
 
-  /// 重做
+  /// Redo function
   void redo() {
     if (_currentIndex < _history.length) {
       _currentIndex = _currentIndex + 1;
@@ -347,14 +347,14 @@ class DrawingController extends ChangeNotifier {
     }
   }
 
-  /// 清理画布
+  /// Clear the drawing board
   void clear() {
     _history.clear();
     _currentIndex = 0;
     _refreshDeep();
   }
 
-  /// 获取图片数据
+  /// Get image data
   Future<ByteData?> getImageData() async {
     try {
       final RenderRepaintBoundary boundary = painterKey.currentContext!
@@ -368,22 +368,22 @@ class DrawingController extends ChangeNotifier {
     }
   }
 
-  /// 获取画板内容Json
+  /// Get drawing board content as JSON
   List<Map<String, dynamic>> getJsonList() {
     return _history.map((PaintContent e) => e.toJson()).toList();
   }
 
-  /// 刷新表层画板
+  /// Refresh the surface canvas
   void _refresh() {
     painter?._refresh();
   }
 
-  /// 刷新底层画板
+  /// Refresh the base canvas
   void _refreshDeep() {
     realPainter?._refresh();
   }
 
-  /// 销毁控制器
+  /// Destroy the controller
   @override
   void dispose() {
     if (!_mounted) {
@@ -400,7 +400,7 @@ class DrawingController extends ChangeNotifier {
   }
 }
 
-/// 画布刷新控制器
+/// Canvas refresh controller
 class RePaintNotifier extends ChangeNotifier {
   void _refresh() {
     notifyListeners();
