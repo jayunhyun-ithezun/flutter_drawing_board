@@ -49,34 +49,34 @@ class DrawingBoard extends StatefulWidget {
     this.alignment = Alignment.topCenter,
   });
 
-  /// 画板背景控件
+  /// Background of drawing board
   final Widget background;
 
-  /// 画板控制器
+  /// drawing board controller
   final DrawingController? controller;
 
-  /// 显示默认样式的操作栏
+  /// Show default style action bar
   final bool showDefaultActions;
 
-  /// 显示默认样式的工具栏
+  /// Show default style toolbar
   final bool showDefaultTools;
 
-  /// 开始拖动
+  /// Start dragging.
   final Function(PointerDownEvent pde)? onPointerDown;
 
-  /// 正在拖动
+  /// Dragging
   final Function(PointerMoveEvent pme)? onPointerMove;
 
-  /// 结束拖动
+  /// end drag
   final Function(PointerUpEvent pue)? onPointerUp;
 
-  /// 边缘裁剪方式
+  /// edge cutting method
   final Clip clipBehavior;
 
-  /// 默认工具栏构建器
+  /// Default toolbar builder
   final DefaultToolsBuilder? defaultToolsBuilder;
 
-  /// 缩放板属性
+  /// Zoom Board Properties
   final Clip boardClipBehavior;
   final PanAxis panAxis;
   final EdgeInsets? boardBoundaryMargin;
@@ -92,7 +92,7 @@ class DrawingBoard extends StatefulWidget {
   final TransformationController? transformationController;
   final AlignmentGeometry alignment;
 
-  /// 默认工具项列表
+  /// List of default tool items
   static List<DefToolItem> defaultTools(
       Type currType, DrawingController controller) {
     return <DefToolItem>[
